@@ -24,4 +24,4 @@ COPY --from=builder --chown=none:1000 /go/bin/sensor /sensor
 # use a non-root user
 USER none
 # run app
-# ENTRYPOINT ["./sensor" ,"--mongoURI=mongodb://mongo-database:27017"]
+ENTRYPOINT ["./sensor" ,"--mongoURI=mongodb://mongo-database:27017"]
