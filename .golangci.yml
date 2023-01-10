@@ -1,0 +1,43 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  gocyclo:
+    min-complexity: 20
+  maligned:
+    suggest-new: true
+  gocritic:
+    color: true
+    shorterErrLocation: true
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+    disabled-checks:
+      - hugeParam
+  revive:
+    rules:
+      - name: package-comments
+        disabled: true
+linters:
+  enable:
+    - revive
+    - megacheck
+    - unconvert
+    - goconst
+    - misspell
+    - unparam
+    - gofmt
+    - goimports
+    - gocyclo
+    - gocritic
+    - govet
+    - unused
+    - gas
+issues:
+  exclude-use-default: false
+  max-same-issues: 10
+run:
+  skip-dirs:
+    - mock
+    - mocks
+  go: 1.19

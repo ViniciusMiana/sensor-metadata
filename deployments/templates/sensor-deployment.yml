@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-metadata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sensor-metadata
+  template:
+    metadata:
+      labels:
+        app: sensor-metadata
+    spec:
+      containers:
+      - name: sensor-metadata
+        image: {{ .Values.sensor.image }}
+        ports:
+        - containerPort: 4000

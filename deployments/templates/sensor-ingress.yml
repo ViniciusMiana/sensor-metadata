@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sensor-metadata
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /sensor-metadata(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: sensor-metadata
+                port:
+                  number: 4000

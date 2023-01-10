@@ -1,0 +1,220 @@
+basePath: /sensor-metadata
+definitions:
+  Location:
+    properties:
+      lat:
+        description: The latitude of a location
+        type: string
+        x-go-name: Lat
+      lon:
+        description: The longitude of a location
+        type: string
+        x-go-name: Lon
+    title: Sensor Location
+    type: object
+  SensorMetadata:
+    properties:
+      id:
+        description: The id of the sensor
+        type: string
+        x-go-name: ID
+      name:
+        description: The name of the sensor
+        type: string
+        x-go-name: Name
+      location:
+        description: The location of the sensor
+        $ref: "#/definitions/Location"
+        type: object
+        x-go-name: Location
+      tags:
+        items:
+          type: string
+        type: array
+        x-go-name: Tags
+    title: SensorMetadata
+    type: object
+  Error:
+    description: An error in a request
+    properties:
+      message:
+        type: string
+    type: object
+  ID:
+    description: An object containing the ID of the insert object
+    properties:
+      id:
+        type: string
+    type: object
+info:
+  description: |
+    The purpose of this microservice is store sensor meta-data and to find the sensor closest to a location
+  title: sensor-metadata
+  version: v1
+paths:
+  /:
+    post:
+      consumes:
+        - application/json
+      description: this endpoint creates a sensor meta-data
+      operationId: createSensor
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: body
+          name: sensor meta-data creation request
+          required: true
+          schema:
+            $ref: "#/definitions/SensorMetadata"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created sensor meta data id
+          schema:
+            $ref: "#/definitions/ID"
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+  /by-name/{name}:
+    get:
+      consumes:
+        - application/json
+      description: this endpoint returns a sensor given its name
+      operationId: getSensorByName
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: path
+          name: name
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: "#/definitions/SensorMetadata"
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+  /{id}:
+    get:
+      consumes:
+        - application/json
+      description: returns a sensor meta-data given its id
+      operationId: findById
+      parameters:
+        - description: id
+          name: id
+          in: path
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: "#/definitions/SensorMetadata"
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+    put:
+      consumes:
+        - application/json
+      description: this endpoint updates a sensor meta-data
+      operationId: updateSensor
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - description: The id of the sensor to be updated
+          in: path
+          name: id
+          required: true
+          type: string
+        - in: body
+          description: Sensor update request
+          name: sensorUpdateRequest
+          schema:
+            $ref: '#/definitions/SensorMetadata'
+      produces:
+        - application/json
+      responses:
+        "204":
+          description: success no content
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+  /nearest/{lat}/{lon}:
+    get:
+      consumes:
+        - application/json
+      description: returns the closes sensor to a given location
+      operationId: findNearest
+      parameters:
+        - description: latitude
+          name: lat
+          in: path
+          required: true
+          type: string
+        - description: longitude
+          name: lon
+          in: path
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            $ref: "#/definitions/SensorMetadata"
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+schemes:
+  - https
+swagger: "2.0"

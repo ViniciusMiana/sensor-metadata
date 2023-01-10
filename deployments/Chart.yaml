@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sensors
+description: A Helm chart for deploying sensor metadata service, user service and a MongoDB database
+type: application
+version: 0.2.1
+appVersion: "v0.0.1"

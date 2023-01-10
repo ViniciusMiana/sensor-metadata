@@ -1,0 +1,6 @@
+sensor:
+  image: viniciusmiana/sensor:latest
+authenticator:
+  image: viniciusmiana/authenticator:latest
+mongo:
+  image: mongo
