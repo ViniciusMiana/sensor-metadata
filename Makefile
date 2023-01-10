@@ -22,7 +22,7 @@ all: lint test todo
 ## init: Install tools used by the build
 init:
 	@echo "[STATUS] Installing tools used by the build"
-	mkdir -p  $(GO_EXEC_PATH)
+	mkdir -p  $(GO_EXEC_PATH) out test/$(TEST_CLIENT) mocks
 	# install all pre-reqs
 	$(SCRIPTS_DIR)/installTools.sh -e swagger -e linter -e mockery
 	$(GO_EXEC_PATH)/bin/golangci-lint cache clean
@@ -56,15 +56,15 @@ lint: format
 
 
 ## build: Compile this project and add the generated file to out directory
-build: init
+build: $(SOURCES) init
 	@echo "[STATUS] Building app build $(VERSION)"
 	mkdir -p ./out
 	CGO_ENABLED=0 go build -ldflags "-w -s -X main.version=$(VERSION)" -installsuffix 'static' -tags timetzdata -o ./out/sensor ./cmd/sensor/main.go
 	# CGO_ENABLED=0 go build -ldflags "-w -s -X main.version=$(VERSION)" -installsuffix 'static' -tags timetzdata -o ./out/authenticator ./cmd/authenticator/main.go
 
 ## test: Run all repository tests
-test: $(SOURCES) swagger | start_mongo
-	GOGC=20 go test -v -p 1 -timeout 900s -covermode=count -coverprofile=out/coverage.out  ./test ./cmd/sensor/...
+test: build swagger | start_mongo
+	GOGC=20 go test -v -p 1 -timeout 900s -covermode=count -coverprofile=./out/coverage.out  ./test ./cmd/sensor/...
 	make stop_mongo
 
 ## todo: Generate the TODO.md file containing all repository TODOS
@@ -77,11 +77,12 @@ TODO.md:  $(SOURCES)
 ## deploy: Deploy the docker image to the local cluster
 deploy: docker
 	@echo "[INFO] Deploying to local cluster"
+	-helm uninstall sensor
 	helm install sensor ./deployments
 
 
 ## docker: Create the docker image
-docker: cmd/sensor/Dockerfile out/sensor
+docker: cmd/sensor/Dockerfile
 	@echo "[INFO] Creating image: ${TAG}-${COMMIT}"
 	docker build -t  ${TAG}-${COMMIT} -f cmd/sensor/Dockerfile . --progress=plain --platform linux/amd64
 	docker tag ${TAG}-${COMMIT} $(BASE_TAG):latest
