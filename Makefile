@@ -71,23 +71,24 @@ test: $(SOURCES) swagger | start_mongo
 todo: TODO.md
 
 TODO.md:  $(SOURCES)
-	grep -rn --exclude=Makefile --exclude=TODO.md --exclude=\*.{pack,bin,md} --exclude-dir=./test/client '\/\/\s*\(TODO\|todo\)' . | grep -v 'Binary' > 'TODO.md'
+	@echo "[STATUS] Updating TODO.md"
+	@grep -rn --exclude=Makefile --exclude=TODO.md --exclude=\*.{pack,bin,md} --exclude-dir=./test/client '\/\/\s*\(TODO\|todo\)' . | grep -v 'Binary' > 'TODO.md'
 
 
 ## deploy: Deploy the docker image to the local cluster
 deploy: docker
-	@echo "[INFO] Deploying to local cluster"
+	@echo "[STATUS] Deploying to local cluster"
 	helm install sensor ./deployments
 
 
 ## docker: Create the docker image
 docker: cmd/sensor/Dockerfile out/sensor
-	@echo "[INFO] Creating image: ${TAG}-${COMMIT}"
+	@echo "[STATUS] Creating image: ${TAG}-${COMMIT}"
 	docker build -t  ${TAG}-${COMMIT} -f cmd/sensor/Dockerfile . --progress=plain --platform linux/amd64
 	docker tag ${TAG}-${COMMIT} $(BASE_TAG):latest
 	docker push ${TAG}-${COMMIT}
 	docker push $(BASE_TAG):latest
-	@echo "[INFO] Image created:  ${TAG}-${COMMIT}"
+	@echo "[STATUS] Image created:  ${TAG}-${COMMIT}"
 
 ## start_images: starts mongo
 start_mongo:
