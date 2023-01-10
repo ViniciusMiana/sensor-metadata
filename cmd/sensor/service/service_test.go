@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
+	"testing"
+
 	"github.com/ViniciusMiana/sensor-metadata/cmd/sensor/db"
 	dbMock "github.com/ViniciusMiana/sensor-metadata/mocks/sensor/db"
 	"github.com/stretchr/testify/mock"
-	"testing"
 
 	"github.com/stretchr/testify/require"
 	"go.mongodb.org/mongo-driver/bson/primitive"
