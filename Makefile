@@ -66,7 +66,7 @@ build: $(SOURCES) init
 
 ## test: Run all repository tests
 test: build swagger | start_mongo
-	GOGC=20 go test -v -p 1 -timeout 900s -covermode=count -coverprofile=./out/coverage.out  ./test ./cmd/sensor/...
+	GOGC=20 go test -v -p 1 -timeout 900s -covermode=count -coverprofile=./out/coverage.out  ./test ./cmd/sensor/... ./cmd/authenticator/...
 	make stop_mongo
 
 ## todo: Generate the TODO.md file containing all repository TODOS

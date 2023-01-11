@@ -93,6 +93,7 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user: []
+        - role: [ ADMIN ]
       tags:
         - Sensor
   /by-name/{name}:
@@ -102,10 +103,6 @@ paths:
       description: this endpoint returns a sensor given its name
       operationId: getSensorByName
       parameters:
-        - in: header
-          name: token
-          required: true
-          type: string
         - in: path
           name: name
           required: true
@@ -197,6 +194,9 @@ paths:
           description: A problem when processing the request
           schema:
             $ref: "#/definitions/Error"
+      security:
+        - user: [ ]
+        - role: [ ADMIN]
       tags:
         - Sensor
     delete:
@@ -240,6 +240,8 @@ paths:
           description: A problem when processing the request
           schema:
             $ref: "#/definitions/Error"
+      security:
+        - user: [ ]
       tags:
         - Sensor
   /nearest/{lat}/{lon}:
