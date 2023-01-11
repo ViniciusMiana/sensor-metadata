@@ -10,12 +10,11 @@ import (
 )
 
 /*
-Points for improvement:
-1 - Do we really need this layer?
-2 - Separate data objects and service in different files
-3 - Structure errors
-4 - Increase test coverage
-*/
+Points for improvement: */
+// TODO 1 - Do we really need this layer?
+// TODO 2 - Separate data objects and service in different files
+// TODO 3 - Structure errors
+// TODO 4 - Increase test coverage
 
 // Location represents a location with lat and lon
 type Location struct {

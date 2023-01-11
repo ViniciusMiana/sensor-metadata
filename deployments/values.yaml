@@ -1,6 +1,8 @@
 sensor:
   image: viniciusmiana/sensor:latest
 authenticator:
-  image: viniciusmiana/authenticator:latest
+  image: viniciusmiana/auth:latest
 mongo:
   image: mongo
+jwt:
+  name: jwt

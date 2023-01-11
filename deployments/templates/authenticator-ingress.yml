@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: authenticator
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /authenticator(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: authenticator
+                port:
+                  number: 3000

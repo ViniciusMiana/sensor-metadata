@@ -4,6 +4,7 @@ GO_EXEC_PATH := .tmp_exec_path
 VERSION ?= $(shell git describe --tags)
 COMMIT ?= $(shell git rev-parse --short HEAD)
 BASE_TAG := viniciusmiana/sensor
+AUTH_TAG := viniciusmiana/auth
 TAG ?= $(BASE_TAG):$(VERSION)
 SCRIPTS_DIR=./scripts
 REGISTRY ?= $(shell docker ps -q -f name=registry)
@@ -13,6 +14,7 @@ all: build
 # TODO Include memory limit, besides GOGC
 # TODO Add CI/CD support
 # TODO Run mocks and add mocked tests
+# TODO Separate into to makefiles and/or separate targets
 
 TEST_CLIENT := client
 SOURCES := $(shell find ./ -name '*.go' | grep -v test/$(TEST_CLIENT) )
@@ -60,7 +62,7 @@ build: $(SOURCES) init
 	@echo "[STATUS] Building app build $(VERSION)"
 	mkdir -p ./out
 	CGO_ENABLED=0 go build -ldflags "-w -s -X main.version=$(VERSION)" -installsuffix 'static' -tags timetzdata -o ./out/sensor ./cmd/sensor/main.go
-	# CGO_ENABLED=0 go build -ldflags "-w -s -X main.version=$(VERSION)" -installsuffix 'static' -tags timetzdata -o ./out/authenticator ./cmd/authenticator/main.go
+	CGO_ENABLED=0 go build -ldflags "-w -s -X main.version=$(VERSION)" -installsuffix 'static' -tags timetzdata -o ./out/authenticator ./cmd/authenticator/main.go
 
 ## test: Run all repository tests
 test: build swagger | start_mongo
@@ -83,7 +85,17 @@ deploy: docker
 
 
 ## docker: Create the docker image
-docker: cmd/sensor/Dockerfile
+docker: dockerSensor dockerAuth
+
+dockerAuth:  cmd/authenticator/Dockerfile
+	@echo "[STATUS] Creating auth image: ${AUTH_TAG}:${VERSION}-${COMMIT}"
+	docker build -t  ${AUTH_TAG}:${VERSION}-${COMMIT} -f cmd/authenticator/Dockerfile . --progress=plain --platform linux/amd64
+	docker tag ${AUTH_TAG}:${VERSION}-${COMMIT} ${AUTH_TAG}:latest
+	docker push ${AUTH_TAG}:${VERSION}-${COMMIT}
+	docker push ${AUTH_TAG}:latest
+	@echo "[STATUS] Image created:  ${AUTH_TAG}:${VERSION}-${COMMIT}"
+
+dockerSensor: cmd/sensor/Dockerfile
 	@echo "[STATUS] Creating image: ${TAG}-${COMMIT}"
 	docker build -t  ${TAG}-${COMMIT} -f cmd/sensor/Dockerfile . --progress=plain --platform linux/amd64
 	docker tag ${TAG}-${COMMIT} $(BASE_TAG):latest

@@ -35,6 +35,13 @@ test/              # Integration tests
 The [go project layout](https://github.com/golang-standards/project-layout) standard was followed to a degree, 
 with some modifications to allow multiple microservices in the same repository.
 
+## Enviroment variables and run arguments
+
+All environment variables and run arguments are already configure between the Dockerfile and Helm / Kubernetes scripts.
+Nevertheless, here they are:
+
+TODO
+
 ## Building, testing and running
 
 `make help` will show the commands for building, running lint, tests and deployment.
@@ -42,6 +49,10 @@ with some modifications to allow multiple microservices in the same repository.
 In order to deploy you need to have `kubectl` properly configured to the desired k8s cluster and helm installed.
 If you want to run locally, you can use `scripts/kind.sh` to install kind and create a cluster with ingress enabled.
 After that `make deploy` will deploy to your local cluster.
+
+If you want to run separately you need to configure the enviroment variables and run the following commands:
+
+TODO
 
 You test the basic operations with the following commands:
 

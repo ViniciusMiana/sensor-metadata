@@ -11,15 +11,13 @@ import (
 )
 
 /*
-Points for improvement:
-1 - Think further on the duplicate information Location and GeoJson
-2 - Separate data objects and mongo store in different files
-3 - Have a common mongo.Database object for all stores in the same microservice
-4 - Structure errors
-5 - Increase test coverage
-6 - Add information on insert/update dates, any relevant change history
-*/
-
+Points for improvement: */
+// TODO 1 - Think further on the duplicate information Location and GeoJson
+// TODO 2 - Separate data objects and mongo store in different files
+// TODO 3 - Have a common mongo.Database object for all stores in the same microservice
+// TODO 4 - Structure errors
+// TODO 5 - Increase test coverage
+// TODO 6 - Add information on insert/update dates, any relevant change history
 const sensorCollectionName = "sensorMetadata"
 
 // Sensor represents a sensor with meta-data

@@ -79,10 +79,20 @@ paths:
           description: Required parameters were not sent
           schema:
             $ref: "#/definitions/Error"
+        "401":
+          description: Request was not authenticated
+          schema:
+            $ref: "#/definitions/Error"
+        "403":
+          description: User is not authorized
+          schema:
+            $ref: "#/definitions/Error"
         "500":
           description: A problem when processing the request
           schema:
             $ref: "#/definitions/Error"
+      security:
+        - user: []
       tags:
         - Sensor
   /by-name/{name}:
@@ -175,6 +185,57 @@ paths:
           description: Required parameters were not sent
           schema:
             $ref: "#/definitions/Error"
+        "401":
+          description: Request was not authenticated
+          schema:
+            $ref: "#/definitions/Error"
+        "403":
+          description: User is not authorized
+          schema:
+            $ref: "#/definitions/Error"
+        "500":
+          description: A problem when processing the request
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Sensor
+    delete:
+      consumes:
+        - application/json
+      description: this endpoint delete a sensor meta-data
+      operationId: deleteSensor
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - description: The id of the sensor to be updated
+          in: path
+          name: id
+          required: true
+          type: string
+        - in: body
+          description: Sensor update request
+          name: sensorUpdateRequest
+          schema:
+            $ref: '#/definitions/SensorMetadata'
+      produces:
+        - application/json
+      responses:
+        "204":
+          description: success no content
+        "400":
+          description: Required parameters were not sent
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Request was not authenticated
+          schema:
+            $ref: "#/definitions/Error"
+        "403":
+          description: User is not authorized
+          schema:
+            $ref: "#/definitions/Error"
         "500":
           description: A problem when processing the request
           schema:
@@ -217,4 +278,17 @@ paths:
         - Sensor
 schemes:
   - https
+securityDefinitions:
+  user:
+    description: user
+    in: header
+    name: user
+    type: apiKey
+    x-go-name: User
+  role:
+    description: role
+    in: header
+    name: role
+    type: apiKey
+    x-go-name: Role
 swagger: "2.0"

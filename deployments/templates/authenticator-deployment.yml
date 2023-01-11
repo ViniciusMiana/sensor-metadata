@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sensor-metadata
+  name: authenticator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sensor-metadata
+      app: authenticator
   template:
     metadata:
       labels:
-        app: sensor-metadata
+        app: authenticator
     spec:
       containers:
-      - name: sensor-metadata
-        image: {{ .Values.sensor.image }}
+      - name: authenticator
+        image: {{ .Values.authenticator.image }}
         envFrom:
           - secretRef:
               name: {{ .Values.jwt.name }}
         ports:
-        - containerPort: 4000
+        - containerPort: 3000
