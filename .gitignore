@@ -16,3 +16,4 @@ cmd/sensor/mocks
 test/client
 .tmp_exec_path
 mocks
+.DS_Store
