@@ -128,3 +128,6 @@ help: Makefile
 	@echo
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/\t/'
 	@echo
+
+.EXPORT_ALL_VARIABLES:
+API_KEY=pk.eyJ1IjoidmlubnltaWFuYSIsImEiOiJjbG5udHIza3gwOGlvMndwMTQzM3prdTdnIn0.mlCNLgTF3Ctvyslbao5pRw

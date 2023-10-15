@@ -1,6 +1,6 @@
 module github.com/ViniciusMiana/sensor-metadata
 
-go 1.19
+go 1.20
 
 require (
 	github.com/go-openapi/errors v0.20.3

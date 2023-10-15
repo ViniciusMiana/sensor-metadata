@@ -16,10 +16,10 @@ if [ ${#multi[@]} -eq 0 ]; then
 fi
 
 if [ "$GO_EXEC_PATH" == "" ]; then GO_EXEC_PATH=".tmp_exec_path"; fi
-if [ "$LINT_VERSION" == "" ]; then LINT_VERSION="1.50.1"; fi
+if [ "$LINT_VERSION" == "" ]; then LINT_VERSION="1.54.2"; fi
 if [ "$SWAGGER_VERSION" == "" ]; then SWAGGER_VERSION="0.29.0"; fi
 if [ "$SWAGGER_CLI_VERSION" == "" ]; then SWAGGER_CLI_VERSION="4.0.4"; fi
-if [ "$MOCKERY_VERSION" == "" ]; then MOCKERY_VERSION="2.14.0"; fi
+if [ "$MOCKERY_VERSION" == "" ]; then MOCKERY_VERSION="2.35.4"; fi
 if [ "$TRIVY_VERSION" == "" ]; then TRIVY_VERSION="0.32.1"; fi
 
 tmpdir=`mktemp -d`

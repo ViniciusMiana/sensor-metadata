@@ -33,6 +33,18 @@ func (app *Application) findByName(w http.ResponseWriter, r *http.Request) {
 	app.jsonReturn(w, http.StatusOK, m)
 }
 
+func (app *Application) findNearestByLocatioName(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	vars := mux.Vars(r)
+	id := vars["location"]
+	m, err := app.sensors.FindNearestByLocatioName(ctx, id)
+	if err != nil {
+		app.jsonErrorReturn(w, err, http.StatusBadRequest)
+		return
+	}
+	app.jsonReturn(w, http.StatusOK, m)
+}
+
 func (app *Application) findNearest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	vars := mux.Vars(r)
@@ -55,6 +67,22 @@ func (app *Application) insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id, err := app.sensors.Add(ctx, sensor)
+	if err != nil {
+		app.jsonErrorReturn(w, err, http.StatusInternalServerError)
+		return
+	}
+	app.jsonReturn(w, http.StatusCreated, ID{ID: id})
+}
+
+func (app *Application) insertWithLocationName(w http.ResponseWriter, r *http.Request) {
+	var sensor service.SensorMetadataWithLocationName
+	ctx := r.Context()
+	err := json.NewDecoder(r.Body).Decode(&sensor)
+	if err != nil {
+		app.jsonErrorReturn(w, err, http.StatusBadRequest)
+		return
+	}
+	id, err := app.sensors.AddWithLocationName(ctx, sensor)
 	if err != nil {
 		app.jsonErrorReturn(w, err, http.StatusInternalServerError)
 		return

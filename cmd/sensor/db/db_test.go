@@ -2,7 +2,9 @@ package db
 
 import (
 	"context"
+	"reflect"
 	"testing"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -163,5 +165,47 @@ func TestFindNearest(t *testing.T) {
 	sensor, err = s.FindNearest(ctx, Location{Lat: 36.1627, Lon: -86.7816})
 	require.NoError(t, err)
 	require.Equal(t, sensors[2].Name, sensor.Name)
+
+}
+
+func workerRoutine(ch chan bool) {
+
+	a := true
+	for a {
+		println("Hello")
+		a = <-ch
+	}
+	// Receive message from main program.
+
+	println("Signal Received From Main")
+
+	// Send a message to the main program.
+	close(ch)
+}
+
+func a(b ...string) {
+	println(b[1])
+}
+
+func TestGoRoutine(t *testing.T) {
+	// Create channel
+	ch := make(chan bool)
+
+	// define workerRoutine
+	go workerRoutine(ch)
+	time.Sleep(100)
+	// Send signal to worker goroutine
+	ch <- false
+
+	// Receive a message from the workerRoutine.
+	<-ch
+	println("Signal Received")
+	list := []int{1, 2, 3}
+	for a, b := range list {
+		println(a, b)
+	}
+	a("1", "2", "3")
+	c := reflect.ValueOf("3")
+	print(c.String())
 
 }

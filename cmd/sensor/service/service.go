@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/ViniciusMiana/sensor-metadata/cmd/sensor/db"
@@ -28,6 +29,14 @@ type SensorMetadata struct {
 	Name     string    `json:"name"`
 	Location *Location `json:"location,omitempty"`
 	Tags     []string  `json:"tags"`
+}
+
+// SensorMetadataWithLocationName represents a sensor metadata DTO
+type SensorMetadataWithLocationName struct {
+	ID       string   `json:"id,omitempty"`
+	Name     string   `json:"name"`
+	Location string   `json:"location,omitempty"`
+	Tags     []string `json:"tags"`
 }
 
 // ToDatabase converts sensor meta-data to the database format
@@ -85,22 +94,27 @@ type SensorMetadataService interface {
 	FindByName(ctx context.Context, name string) (sensor *SensorMetadata, err error)
 	FindByID(ctx context.Context, id string) (sensor *SensorMetadata, err error)
 	Add(ctx context.Context, sensor SensorMetadata) (id string, err error)
+	AddWithLocationName(ctx context.Context, sensor SensorMetadataWithLocationName) (id string, err error)
 	Update(ctx context.Context, sensor SensorMetadata) (err error)
 	Delete(ctx context.Context, id string) (err error)
 	FindNearest(ctx context.Context, lat, lon string) (sensor *SensorMetadata, err error)
+	FindNearestByLocatioName(ctx context.Context, location string) (sensor *SensorMetadata, err error)
 }
 
 type sensorMetadataService struct {
 	sensorStore db.SensorStore
+	mapBox      MapBox
 }
 
 func NewSensorMetadataService(uri, databaseName string) (*sensorMetadataService, error) {
+	apiKey := os.Getenv("API_KEY")
 	ss, err := db.NewSensorStore(uri, databaseName)
 	if err != nil {
 		return nil, err
 	}
 	return &sensorMetadataService{
 		sensorStore: ss,
+		mapBox:      NewMapBox(apiKey),
 	}, nil
 }
 
@@ -134,6 +148,28 @@ func (s sensorMetadataService) Add(ctx context.Context, sensor SensorMetadata) (
 		return "", err
 	}
 	return oid.Hex(), nil
+}
+
+func (s sensorMetadataService) AddWithLocationName(ctx context.Context, sensor SensorMetadataWithLocationName) (id string, err error) {
+	loc, err := s.mapBox.FindLatLon(sensor.Location)
+	if err != nil {
+		return "", err
+	}
+	return s.Add(ctx, SensorMetadata{
+		ID:       sensor.ID,
+		Name:     sensor.Name,
+		Location: loc,
+		Tags:     sensor.Tags,
+	})
+}
+
+func (s sensorMetadataService) FindNearestByLocatioName(ctx context.Context, location string) (sensor *SensorMetadata, err error) {
+	loc, err := s.mapBox.FindLatLon(location)
+	if err != nil {
+		return nil, err
+	}
+	return s.FindNearest(ctx, loc.Lat, loc.Lon)
+
 }
 
 func (s sensorMetadataService) Update(ctx context.Context, sensor SensorMetadata) error {

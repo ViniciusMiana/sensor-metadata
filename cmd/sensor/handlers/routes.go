@@ -109,9 +109,11 @@ func (app *Application) Routes() *mux.Router {
 	r.HandleFunc("/nearest/{lat}/{lon}", app.findNearest).Methods(http.MethodGet)
 	r.HandleFunc("/{id}", app.findByID).Methods(http.MethodGet)
 	r.HandleFunc("/", app.requireAuthentication(app.insert, []string{"ADMIN"})).Methods(http.MethodPost)
+	r.HandleFunc("/sensor", app.insertWithLocationName).Methods(http.MethodPost)
 	r.HandleFunc("/{id}", app.requireAuthentication(app.delete, []string{"ADMIN"})).Methods(http.MethodDelete)
 	r.HandleFunc("/{id}", app.requireAuthentication(app.update, []string{"ADMIN"})).Methods(http.MethodPut)
 	r.HandleFunc("/by-name/{name}", app.findByName).Methods(http.MethodGet)
+	r.HandleFunc("/nearest-by-name/{location}", app.findNearestByLocatioName).Methods(http.MethodGet)
 
 	return r
 }
